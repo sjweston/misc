@@ -1,0 +1,78 @@
+---
+title: "Function to estimate power to detect significant heterogeneity in meta-analysis"
+author: "Sara J. Weston"
+date: "10/25/2019"
+output: html_document
+---
+
+## Function
+
+The following function was used to estimate the power of the significance test of heterogenity ($Q$) in a meta-analysis. Equations were based on [Valentine, Pigott, & Rothstein, 2010](https://journals.sagepub.com/doi/full/10.3102/1076998609346961).
+
+Note that the tidyverse package is required.
+
+```{r, results = 'hide', echo = F, warning = F, message = F}
+library(tidyverse)
+```
+
+
+```{r}
+Q.pwr = function(Q, nstudy, alpha = .05, plot = FALSE){
+
+  require(tidyverse, attach.required = T, quietly = T, warn.conflicts = F)
+
+  try(if(length(nstudy) > 1) stop("only one number can be entered for nstudy"))
+  try(if(length(alpha) > 1) stop("only one number can be entered for alpha"))
+
+  cv = qchisq(p = 1-alpha, df = nstudy-1, ncp = Q, lower.tail = T)
+  typeII = pf(q = cv, df1 = cv, df2 = Q, lower.tail = F)
+  power = 1 - typeII
+
+  return.plot = NULL
+
+  if(plot == TRUE){
+
+    try(if(length(Q) < 2) warning("multiple values of Q needed for plot"))
+
+    try(if(length(Q) > 1)
+      return.plot = data.frame(Q = Q, power = power) %>%
+        ggplot(aes(x = Q, y = power )) +
+        geom_point(size = 2) +
+        geom_line() +
+        theme_bw() +
+        ggtitle(paste("Power estimates of heterogeneity by Q for", nstudy, "studies")))
+
+  }
+
+  if(!is.null(return.plot)) return(list(power, return.plot))
+  if(is.null(return.plot)) return(power)
+
+}
+```
+
+
+## Example: single estimate
+
+The function requires input of a Q statistic (hypothetical if pre-data collection, actual if post-hoc power analysis) and the number of studies. $\alpha$  is assumed to be .05.
+
+```{r}
+Q.pwr(Q = 10, nstudy = 4)
+```
+
+
+## Example: multiple estimates
+
+Q can take the form of a vector of multiple values, to estimate power at different levels of heterogeneity. 
+
+```{r}
+Q.pwr(Q = 1:20, nstudy = 4)
+```
+
+In addition, you can ask the function to plot these estimates.
+
+```{r}
+Q.pwr(Q = 1:20, nstudy = 4, plot = TRUE)
+```
+
+
+

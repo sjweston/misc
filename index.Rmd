@@ -1,0 +1,13 @@
+---
+title: "Miscellaneous materials"
+author: "Sara J. Weston <br> University of Oregon"
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 2
+    toc_float: TRUE
+    theme: cosmo
+---
+
+This website hosts miscellaneous code, documents, etc. Enjoy, I guess!
+

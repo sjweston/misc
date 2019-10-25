@@ -1,0 +1,16 @@
+name: Miscellaneous materials
+output_dir: "."
+navbar:
+  title: "Miscellaneous materials"
+  left:
+    - text: "R Code"
+      menu:
+      - text: "Power: Q"
+        href: "code/power-Q.html"
+  right:
+    - icon: fa-github
+      href: https://github.com/sjweston/misc/settings
+output:
+  html_document:
+    lib_dir: site_libs
+    self_contained: no
